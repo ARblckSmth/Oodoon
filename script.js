@@ -160,7 +160,11 @@ class Levels {
                 "localDescendDoorXPos": 286,
                 "cameraPosY": 0,
                 "contentSide": 1,
-                "content": "Level1 - Content"
+                "content": "Hello adventurer! ....."
+                            + "\nUse the 'a' and 'd' keys to move"
+                            + "\nUse the 'w' key to enter a door"
+                            + "\nUse the spaceabr to attack"
+                            
             },
             {
                 "xPos": 800,
@@ -686,31 +690,52 @@ class Player {
 let player = new Player(280, levels.GetGlobalYRefPos() - 32, 64, 32);
 
 class InputHandler {
-    constructor() {}
+    constructor() {
+        var inputMoveLeft = false;
+        var inputMoveRight = false;
+        var inputInteract = false;
+        var inputAttack = false;
+    }
+
+    ResetInputs() {
+        this.inputMoveLeft = false;
+        this.inputMoveRight = false;
+        this.inputInteract = false;
+        this.inputAttack = false;
+    }
+
+    ExtractInputFromRawKeys() {
+        this.inputMoveLeft = keys['a'] || keys['A'];
+        this.inputMoveRight = keys['d'] || keys['D'];
+        this.inputInteract = keys['w'] || keys['W'];
+        this.inputAttack = keys[' '];
+    }
 
     update() {
+
+        this.ExtractInputFromRawKeys();
 
         if(camera.camState != CameraState.Idle) {
             return;
         }
 
-        if(keys['w']) {
+        if(this.inputInteract) {
             if(player.TryToInteract()) {
                 return;
             }
         }
 
-        if((keys['a'] && !keys['d']) || (!keys['a'] && keys['d'])) {
-            if(keys['a']) {
-                if(keys[' '] && player.TryToAttackLeft()) {
+        if((this.inputMoveLeft && !this.inputMoveRight) || (!this.inputMoveLeft && this.inputMoveRight)) {
+            if(this.inputMoveLeft) {
+                if(this.inputAttack && player.TryToAttackLeft()) {
                     return;
                 }
                 else if(player.TryToMoveLeft()){
                     return;
                 }
             }
-            else if(keys['d']) {
-                if(keys[' '] && player.TryToAttackRight()) {
+            else if(this.inputMoveRight) {
+                if(this.inputAttack && player.TryToAttackRight()) {
                     return;
                 }
                 else if(player.TryToMoveRight()){
@@ -719,7 +744,7 @@ class InputHandler {
             }
         }
         else {
-            if(keys[' '] && player.TryToAttack()) {
+            if(this.inputAttack && player.TryToAttack()) {
                 return;
             }
             else if(player.TryToIdle()) {
@@ -727,6 +752,7 @@ class InputHandler {
             }
         }
         
+        this.ResetInputs();
     }
 }
 let inputHandler = new InputHandler();
