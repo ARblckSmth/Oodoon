@@ -297,7 +297,10 @@ const PlayerState = {
 
     AttackAnticipation: 3,
     Attack: 4,
-    AttackFollowThrough: 5
+    AttackFollowThrough: 5,
+
+    EnterAscend: 6,
+    EnterDescend: 7
 }
 Object.freeze(PlayerState);
 
@@ -419,6 +422,30 @@ class Player {
                 "drawOffsetX": 32,
                 "drawOffsetY": 32,
                 "looping": false
+            },
+            {
+                "name": "RightEnter",
+                "sourceX": 32,
+                "sourceY": 352,
+                "noOfFrames": 6,
+                "frameWidth": 64,
+                "frameHeight": 32,
+                "frameSpacing": 32,
+                "drawOffsetX": 32,
+                "drawOffsetY": 0,
+                "looping": false
+            },
+            {
+                "name": "LeftEnter",
+                "sourceX": 32,
+                "sourceY": 416,
+                "noOfFrames": 6,
+                "frameWidth": 64,
+                "frameHeight": 32,
+                "frameSpacing": 32,
+                "drawOffsetX": 0,
+                "drawOffsetY": 0,
+                "looping": false
             }
         ]
 
@@ -455,6 +482,12 @@ class Player {
                 break;
             case "LeftAttackFollowThrough":
                 i = 7;
+                break;
+            case "RightEnter":
+                i = 8;
+                break;
+            case "LeftEnter":
+                i = 9;
                 break;
         }
 
@@ -556,35 +589,86 @@ class Player {
                     }
                 }
                 break;
+
+            case PlayerState.EnterAscend:
+                if(this.ActiveAnimationComplete()) {
+                    
+                    this.x = levels.GetDescendDoorGlobalPosX() + commonDoorWidth / 4;
+                    this.y = levels.GetGlobalYRefPos() - this.h;
+                    
+                    this.playerState = PlayerState.Idle;
+                    
+                    if(this.playerFacing == Facing.Right) {
+                        this.SetActiveAnimation("RightIdle");
+                    }
+                    else {
+                        this.SetActiveAnimation("LeftIdle");
+                    }
+                }
+                break;
+            case PlayerState.EnterDescend:
+                if(this.ActiveAnimationComplete()) {
+                    
+                    this.x = levels.GetAscendDoorGlobalPosX() + commonDoorWidth / 4;
+                    this.y = levels.GetGlobalYRefPos() - this.h;
+
+                    this.playerState = PlayerState.Idle;
+                    
+                    if(this.playerFacing == Facing.Right) {
+                        this.SetActiveAnimation("RightIdle");
+                    }
+                    else {
+                        this.SetActiveAnimation("LeftIdle");
+                    }
+                }
+                break;
         }
     }
 
     TryToInteract() {
 
+        var success = false;
+        
         if(this.playerState == PlayerState.Idle || this.playerState == PlayerState.Moving) {
 
             if(levels.TryDescend(this.x)) {
-                fade(content);
-                camera.moveTo(0, levels.GetCameraPosY(), cameraTransitionTime);
-                this.x = levels.GetAscendDoorGlobalPosX() + commonDoorWidth / 4;
-                this.y = levels.GetGlobalYRefPos() - this.h;
-                this.playerState = PlayerState.Idle;
+                //fade(content);
+                //camera.moveTo(0, levels.GetCameraPosY(), cameraTransitionTime);
+                //this.x = levels.GetAscendDoorGlobalPosX() + commonDoorWidth / 4;
+                //this.y = levels.GetGlobalYRefPos() - this.h;
+                //this.playerState = PlayerState.Idle;
+                //return true;
 
-                return true;
+                this.playerState = PlayerState.EnterDescend;
+                success = true;
             }
 
             else if(levels.TryAscend(this.x)) {
+                //fade(content);
+                //camera.moveTo(0, levels.GetCameraPosY(), cameraTransitionTime);
+                //this.x = levels.GetDescendDoorGlobalPosX() + commonDoorWidth / 4;
+                //this.y = levels.GetGlobalYRefPos() - this.h;
+                //this.playerState = PlayerState.Idle;
+                //return true;
+
+                this.playerState = PlayerState.EnterAscend;
+                success = true;
+            }
+
+            if(success) {
                 fade(content);
                 camera.moveTo(0, levels.GetCameraPosY(), cameraTransitionTime);
-                this.x = levels.GetDescendDoorGlobalPosX() + commonDoorWidth / 4;
-                this.y = levels.GetGlobalYRefPos() - this.h;
-                this.playerState = PlayerState.Idle;
 
-                return true;
+                if(this.playerFacing == Facing.Right) {
+                    this.SetActiveAnimation("RightEnter");
+                }
+                else {
+                    this.SetActiveAnimation("LeftEnter");
+                }
             }
         }
 
-        return false;
+        return success;
     }
 
     TryToAttack() {
