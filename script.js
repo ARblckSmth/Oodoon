@@ -163,7 +163,7 @@ class Levels {
                 "content": "Hello adventurer! ....."
                             + "\nUse the 'a' and 'd' keys to move"
                             + "\nUse the 'w' key to enter a door"
-                            + "\nUse the spaceabr to attack"
+                            + "\nUse the spacebar to attack"
                             
             },
             {
@@ -189,8 +189,22 @@ class Levels {
                 "sourceY": 0,
                 "localYRefPos": 140,
                 "localAscendDoorXPos": 30,
-                "localDescendDoorXPos": -1,
+                "localDescendDoorXPos": 574,
                 "cameraPosY": -1100,
+                "contentSide": -1,
+                "content": "This should not be visible!"
+            },
+            {
+                "xPos": 240,
+                "yPos": 1900,
+                "width": 808,
+                "height": 307,
+                "sourceX": 416,
+                "sourceY": 320,
+                "localYRefPos": 140,
+                "localAscendDoorXPos": 30,
+                "localDescendDoorXPos": -1,
+                "cameraPosY": -1700,
                 "contentSide": -1,
                 "content": "This should not be visible!"
             }
