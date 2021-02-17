@@ -3,8 +3,9 @@ body {
 }
 
 #canvas {
-    width: 1280px;
-    height: 640px;
+    width: 75%;
+    height: 80%;
+
     background: #3b0029;
     position: absolute;
     top: 50%;
@@ -27,8 +28,8 @@ body {
 }
 
 #div_content {
-    width: 625px;
-    height: 470px;
+    width: 40%;
+    height: 73%;
     position: absolute;
     top: 50%;
     left: 50%;
